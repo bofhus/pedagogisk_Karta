@@ -62,10 +62,7 @@
     }
 
     .layout {
-      display: grid;
-      grid-template-columns: 1.6fr 0.9fr;
-      gap: 24px;
-      align-items: start;
+      display: block;
     }
 
     .matrix-card,
@@ -215,8 +212,56 @@
 
     .detail-card {
       padding: 22px;
-      position: sticky;
-      top: 18px;
+      width: min(720px, calc(100vw - 32px));
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(16, 35, 56, 0.45);
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .detail-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .close-button {
+      border: none;
+      background: #edf3f9;
+      color: #31506c;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .close-button:hover,
+    .close-button:focus-visible {
+      background: #d9e8f6;
+      outline: 2px solid #6e9fd3;
+      outline-offset: 1px;
     }
 
     .detail-card h2 {
@@ -274,12 +319,8 @@
     }
 
     @media (max-width: 1100px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
       .detail-card {
-        position: static;
+        max-height: 92vh;
       }
     }
   </style>
@@ -312,8 +353,14 @@
         </div>
       </section>
 
+    </div>
+
+    <div class="modal" id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title">
       <aside class="detail-card" aria-live="polite">
-        <h2 id="detail-title">Välj en ruta</h2>
+        <div class="detail-header">
+          <h2 id="detail-title">Välj en ruta</h2>
+          <button class="close-button" id="close-modal" type="button" aria-label="Stäng popup">×</button>
+        </div>
         <div class="detail-meta" id="detail-meta"></div>
         <p id="detail-intro">
           Klicka på en exempeldel i matrisen för att visa ett konkret exempel, syfte, genomförande och vad som krävs.
@@ -573,6 +620,19 @@
     const detailPractical = document.getElementById('detail-practical');
     const detailBenefits = document.getElementById('detail-benefits');
     const detailNotes = document.getElementById('detail-notes');
+    const detailModal = document.getElementById('detail-modal');
+    const closeModalButton = document.getElementById('close-modal');
+
+    function openModal() {
+      detailModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      closeModalButton.focus();
+    }
+
+    function closeModal() {
+      detailModal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
 
     function renderMatrix() {
       data.forEach((row, rowIndex) => {
@@ -627,11 +687,21 @@
         li.textContent = item;
         detailBenefits.appendChild(li);
       });
+
+      openModal();
     }
 
     renderMatrix();
-    const firstButton = document.querySelector('.cell button');
-    if (firstButton) firstButton.click();
+
+    closeModalButton.addEventListener('click', closeModal);
+    detailModal.addEventListener('click', event => {
+      if (event.target === detailModal) closeModal();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && detailModal.classList.contains('open')) {
+        closeModal();
+      }
+    });
   </script>
 </body>
 </html>
