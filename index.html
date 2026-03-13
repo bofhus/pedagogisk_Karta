@@ -288,6 +288,7 @@
       padding: 10px;
       background: rgba(255,255,255,0.85);
       min-height: 138px;
+      cursor: pointer;
     }
 
     .cell button {
@@ -1035,6 +1036,10 @@
             <span class="summary">${cell.summary}</span>
           `;
           button.addEventListener('click', () => showDetail(row, cell, button));
+          td.addEventListener('click', event => {
+            if (event.target.closest('button')) return;
+            showDetail(row, cell, button);
+          });
 
           td.appendChild(button);
           tr.appendChild(td);
