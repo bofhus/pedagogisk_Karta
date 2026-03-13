@@ -61,6 +61,77 @@
       font-size: 1rem;
     }
 
+    .role-controls {
+      margin: 18px auto 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      color: #fff;
+    }
+
+    .role-status {
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+    }
+
+    .role-button,
+    .save-button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #ffffff;
+      color: #254561;
+    }
+
+    .save-button {
+      border-radius: 12px;
+      background: #5ea43d;
+      color: #fff;
+      margin-top: 14px;
+    }
+
+    .editor-fields {
+      margin-top: 16px;
+      display: none;
+      gap: 12px;
+    }
+
+    .editor-fields.open {
+      display: grid;
+    }
+
+    .editor-fields label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #2c4e6b;
+    }
+
+    .editor-fields input,
+    .editor-fields textarea {
+      border: 1px solid #c3d4e4;
+      border-radius: 10px;
+      padding: 10px;
+      font: inherit;
+      color: #17324a;
+      resize: vertical;
+      min-height: 42px;
+    }
+
+    .editor-hint {
+      margin: 0;
+      color: #5d7387;
+      font-size: 0.84rem;
+    }
+
     .layout {
       display: block;
     }
@@ -333,6 +404,10 @@
         Första utgåva av en interaktiv matris där varje del är klickbar och visar ett konkret exempel.
         Den är byggd som en enkel, fristående HTML-fil för att du senare ska kunna vidareutveckla den i Codex utan att behöva gräva i ett ramverk som någon överentusiastisk människa valde för att känna sig modern.
       </p>
+      <div class="role-controls">
+        <span class="role-status" id="role-status">Roll: Användare</span>
+        <button class="role-button" id="role-toggle" type="button">Byt till administratör</button>
+      </div>
     </section>
 
     <div class="layout">
@@ -389,12 +464,35 @@
         <p class="footer-note">
           Tips: Nästa version kan få sök, filtrering, export av exempel och en redaktörsvy för att lägga in egna exempel per ruta.
         </p>
+
+        <div class="editor-fields" id="editor-fields">
+          <p class="editor-hint">Administratörsläge: redigera texten nedan och spara ändringarna.</p>
+          <label>Titel
+            <input type="text" id="edit-title">
+          </label>
+          <label>Sammanfattning (visas i matris + popup)
+            <textarea id="edit-summary"></textarea>
+          </label>
+          <label>Exempel
+            <textarea id="edit-example"></textarea>
+          </label>
+          <label>Praktiskt genomförande
+            <textarea id="edit-practical"></textarea>
+          </label>
+          <label>Vad det ger (en punkt per rad)
+            <textarea id="edit-benefits"></textarea>
+          </label>
+          <label>Att tänka på
+            <textarea id="edit-notes"></textarea>
+          </label>
+          <button class="save-button" id="save-cell" type="button">Spara ändringar</button>
+        </div>
       </aside>
     </div>
   </div>
 
   <script>
-    const data = [
+    const initialData = [
       {
         level: 'Bas',
         method: 'PDF / Dokument',
@@ -612,6 +710,9 @@
       }
     ];
 
+    const STORAGE_KEY = 'pedagogiskKartaData';
+    const ADMIN_PASSWORD = 'utbe';
+
     const matrixBody = document.getElementById('matrix-body');
     const detailTitle = document.getElementById('detail-title');
     const detailMeta = document.getElementById('detail-meta');
@@ -622,6 +723,34 @@
     const detailNotes = document.getElementById('detail-notes');
     const detailModal = document.getElementById('detail-modal');
     const closeModalButton = document.getElementById('close-modal');
+    const roleStatus = document.getElementById('role-status');
+    const roleToggle = document.getElementById('role-toggle');
+    const editorFields = document.getElementById('editor-fields');
+    const editTitle = document.getElementById('edit-title');
+    const editSummary = document.getElementById('edit-summary');
+    const editExample = document.getElementById('edit-example');
+    const editPractical = document.getElementById('edit-practical');
+    const editBenefits = document.getElementById('edit-benefits');
+    const editNotes = document.getElementById('edit-notes');
+    const saveCellButton = document.getElementById('save-cell');
+
+    let isAdmin = false;
+    let selectedCellIndex = null;
+    let data = loadData();
+
+    function loadData() {
+      const storedData = localStorage.getItem(STORAGE_KEY);
+      if (!storedData) return structuredClone(initialData);
+      try {
+        return JSON.parse(storedData);
+      } catch {
+        return structuredClone(initialData);
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
 
     function openModal() {
       detailModal.classList.add('open');
@@ -635,6 +764,7 @@
     }
 
     function renderMatrix() {
+      matrixBody.innerHTML = '';
       data.forEach((row, rowIndex) => {
         const tr = document.createElement('tr');
 
@@ -667,7 +797,27 @@
       });
     }
 
+    function updateRoleUI() {
+      roleStatus.textContent = `Roll: ${isAdmin ? 'Administratör' : 'Användare'}`;
+      roleToggle.textContent = isAdmin ? 'Byt till användare' : 'Byt till administratör';
+      editorFields.classList.toggle('open', isAdmin && selectedCellIndex !== null);
+    }
+
+    function fillEditor(cell) {
+      editTitle.value = cell.title;
+      editSummary.value = cell.summary;
+      editExample.value = cell.example;
+      editPractical.value = cell.practical;
+      editBenefits.value = cell.benefits.join('\n');
+      editNotes.value = cell.notes;
+    }
+
     function showDetail(row, cell, activeButton) {
+      selectedCellIndex = {
+        row: Number(activeButton.dataset.row),
+        cell: Number(activeButton.dataset.cell)
+      };
+
       document.querySelectorAll('.cell button').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
       activeButton.setAttribute('aria-pressed', 'true');
 
@@ -688,10 +838,58 @@
         detailBenefits.appendChild(li);
       });
 
+      if (isAdmin) {
+        fillEditor(cell);
+      }
+      updateRoleUI();
+
       openModal();
     }
 
+    function saveSelectedCell() {
+      if (!isAdmin || !selectedCellIndex) return;
+
+      const cell = data[selectedCellIndex.row].cells[selectedCellIndex.cell];
+      cell.title = editTitle.value.trim();
+      cell.summary = editSummary.value.trim();
+      cell.example = editExample.value.trim();
+      cell.practical = editPractical.value.trim();
+      cell.notes = editNotes.value.trim();
+      cell.benefits = editBenefits.value
+        .split('\n')
+        .map(item => item.trim())
+        .filter(Boolean);
+
+      if (cell.benefits.length === 0) {
+        cell.benefits = ['(Ingen punkt angiven)'];
+      }
+
+      saveData();
+      renderMatrix();
+      showDetail(data[selectedCellIndex.row], cell, document.querySelector(`button[data-row="${selectedCellIndex.row}"][data-cell="${selectedCellIndex.cell}"]`));
+      alert('Ändringar sparade.');
+    }
+
+    roleToggle.addEventListener('click', () => {
+      if (isAdmin) {
+        isAdmin = false;
+        updateRoleUI();
+        return;
+      }
+
+      const enteredPassword = prompt('Ange administratörslösenord:');
+      if (enteredPassword === ADMIN_PASSWORD) {
+        isAdmin = true;
+        updateRoleUI();
+      } else if (enteredPassword !== null) {
+        alert('Fel lösenord.');
+      }
+    });
+
+    saveCellButton.addEventListener('click', saveSelectedCell);
+
     renderMatrix();
+    updateRoleUI();
 
     closeModalButton.addEventListener('click', closeModal);
     detailModal.addEventListener('click', event => {
