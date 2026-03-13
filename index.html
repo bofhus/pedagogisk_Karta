@@ -984,8 +984,12 @@
       'Examination / Återkoppling': '✅'
     };
 
+    function cloneInitialData() {
+      return JSON.parse(JSON.stringify(initialData));
+    }
+
     function normalizeData(rawData) {
-      if (!Array.isArray(rawData)) return structuredClone(initialData);
+      if (!Array.isArray(rawData)) return cloneInitialData();
 
       return initialData.map((defaultRow, rowIndex) => {
         const rawRow = rawData[rowIndex] ?? {};
@@ -1016,11 +1020,11 @@
 
     function loadData() {
       const storedData = localStorage.getItem(STORAGE_KEY);
-      if (!storedData) return structuredClone(initialData);
+      if (!storedData) return cloneInitialData();
       try {
         return normalizeData(JSON.parse(storedData));
       } catch {
-        return structuredClone(initialData);
+        return cloneInitialData();
       }
     }
 
