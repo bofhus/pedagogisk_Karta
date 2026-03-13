@@ -138,6 +138,13 @@
       margin-top: 14px;
     }
 
+    .share-link-status {
+      margin: 10px 0 0;
+      font-size: 0.82rem;
+      color: #33536d;
+      min-height: 1.2em;
+    }
+
     .editor-fields {
       margin-top: 16px;
       display: none;
@@ -611,6 +618,8 @@
             <input type="url" id="edit-media-url" placeholder="https://...">
           </label>
           <button class="save-button" id="save-cell" type="button">Spara ändringar</button>
+          <button class="save-button" id="copy-share-link" type="button">Kopiera delningslänk</button>
+          <p class="share-link-status" id="share-link-status" aria-live="polite"></p>
         </div>
       </aside>
     </div>
@@ -863,6 +872,8 @@
     const editNotes = document.getElementById('edit-notes');
     const editMediaUrl = document.getElementById('edit-media-url');
     const saveCellButton = document.getElementById('save-cell');
+    const copyShareLinkButton = document.getElementById('copy-share-link');
+    const shareLinkStatus = document.getElementById('share-link-status');
 
     let isAdmin = false;
     let selectedCellIndex = null;
@@ -884,6 +895,12 @@
     };
 
     function loadData() {
+      const urlData = loadDataFromUrl();
+      if (urlData) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(urlData));
+        return urlData;
+      }
+
       const storedData = localStorage.getItem(STORAGE_KEY);
       if (!storedData) return structuredClone(initialData);
       try {
@@ -891,6 +908,37 @@
       } catch {
         return structuredClone(initialData);
       }
+    }
+
+    function loadDataFromUrl() {
+      const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
+      const params = new URLSearchParams(hash);
+      const encoded = params.get('data');
+      if (!encoded) return null;
+
+      try {
+        const json = atob(encoded.replace(/-/g, '+').replace(/_/g, '/'));
+        const parsed = JSON.parse(json);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      } catch {
+        return null;
+      }
+
+      return null;
+    }
+
+    function getShareableUrl() {
+      const encoded = btoa(JSON.stringify(data)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      const nextUrl = new URL(window.location.href);
+      nextUrl.hash = `data=${encoded}`;
+      return nextUrl.toString();
+    }
+
+    function updateShareableUrl() {
+      const nextUrl = getShareableUrl();
+      window.history.replaceState(null, '', nextUrl);
     }
 
     function saveData() {
@@ -1088,9 +1136,26 @@
       }
 
       saveData();
+      updateShareableUrl();
       renderMatrix();
       showDetail(data[selectedCellIndex.row], cell, document.querySelector(`button[data-row="${selectedCellIndex.row}"][data-cell="${selectedCellIndex.cell}"]`));
       alert('Ändringar sparade.');
+    }
+
+    async function copyShareLink() {
+      const shareUrl = getShareableUrl();
+
+      if (!navigator.clipboard?.writeText) {
+        shareLinkStatus.textContent = `Kunde inte kopiera automatiskt. Dela den här länken manuellt: ${shareUrl}`;
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        shareLinkStatus.textContent = 'Delningslänk kopierad. Öppna länken på annan dator för att se ändringarna.';
+      } catch {
+        shareLinkStatus.textContent = `Kopiering misslyckades. Dela länken manuellt: ${shareUrl}`;
+      }
     }
 
     roleToggle.addEventListener('click', () => {
@@ -1110,9 +1175,11 @@
     });
 
     saveCellButton.addEventListener('click', saveSelectedCell);
+    copyShareLinkButton.addEventListener('click', copyShareLink);
 
     renderMatrix();
     updateRoleUI();
+    updateShareableUrl();
 
     closeModalButton.addEventListener('click', closeModal);
     detailModal.addEventListener('click', event => {
