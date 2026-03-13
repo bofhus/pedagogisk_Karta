@@ -472,6 +472,34 @@
       color: var(--muted);
     }
 
+    .media-box {
+      border: 1px dashed #b9cad9;
+      border-radius: 12px;
+      min-height: 180px;
+      display: grid;
+      place-items: center;
+      background: #f7fbff;
+      overflow: hidden;
+    }
+
+    .media-box img,
+    .media-box video,
+    .media-box iframe {
+      width: 100%;
+      max-height: 320px;
+      border: 0;
+      object-fit: contain;
+      background: #000;
+    }
+
+    .media-placeholder {
+      color: #4f6780;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      padding: 12px;
+      text-align: center;
+    }
+
     @media (max-width: 1100px) {
       .detail-card {
         max-height: 92vh;
@@ -808,6 +836,7 @@
     const detailPractical = document.getElementById('detail-practical');
     const detailBenefits = document.getElementById('detail-benefits');
     const detailNotes = document.getElementById('detail-notes');
+    const detailMedia = document.getElementById('detail-media');
     const detailModal = document.getElementById('detail-modal');
     const closeModalButton = document.getElementById('close-modal');
     const roleControls = document.getElementById('role-controls');
@@ -822,6 +851,7 @@
     const editPractical = document.getElementById('edit-practical');
     const editBenefits = document.getElementById('edit-benefits');
     const editNotes = document.getElementById('edit-notes');
+    const editMediaUrl = document.getElementById('edit-media-url');
     const saveCellButton = document.getElementById('save-cell');
 
     let isAdmin = false;
@@ -921,6 +951,76 @@
       editPractical.value = cell.practical;
       editBenefits.value = cell.benefits.join('\n');
       editNotes.value = cell.notes;
+      editMediaUrl.value = cell.mediaUrl ?? '';
+    }
+
+    function renderMedia(cell) {
+      detailMedia.innerHTML = '';
+
+      const mediaUrl = (cell.mediaUrl ?? '').trim();
+      if (!mediaUrl) {
+        detailMedia.innerHTML = '<p class="media-placeholder">Exempelbild/film</p>';
+        return;
+      }
+
+      const lowerUrl = mediaUrl.toLowerCase();
+      const isImage = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.avif'].some(ext => lowerUrl.includes(ext));
+      const isVideoFile = ['.mp4', '.webm', '.ogg', '.mov', '.m4v'].some(ext => lowerUrl.includes(ext));
+      const isYoutube = lowerUrl.includes('youtube.com/watch') || lowerUrl.includes('youtu.be/');
+
+      if (isImage) {
+        const img = document.createElement('img');
+        img.src = mediaUrl;
+        img.alt = `Exempelbild för ${cell.title}`;
+        detailMedia.appendChild(img);
+        return;
+      }
+
+      if (isVideoFile) {
+        const video = document.createElement('video');
+        video.src = mediaUrl;
+        video.controls = true;
+        detailMedia.appendChild(video);
+        return;
+      }
+
+      if (isYoutube) {
+        const iframe = document.createElement('iframe');
+        iframe.src = toYoutubeEmbedUrl(mediaUrl);
+        iframe.title = `Exempelfilm för ${cell.title}`;
+        iframe.loading = 'lazy';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.allowFullscreen = true;
+        detailMedia.appendChild(iframe);
+        return;
+      }
+
+      const link = document.createElement('a');
+      link.href = mediaUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = 'Öppna bild/film';
+      detailMedia.appendChild(link);
+    }
+
+    function toYoutubeEmbedUrl(url) {
+      try {
+        const parsed = new URL(url);
+        if (parsed.hostname.includes('youtu.be')) {
+          const id = parsed.pathname.replace('/', '');
+          return `https://www.youtube.com/embed/${id}`;
+        }
+
+        const videoId = parsed.searchParams.get('v');
+        if (videoId) {
+          return `https://www.youtube.com/embed/${videoId}`;
+        }
+      } catch {
+        return url;
+      }
+
+      return url;
     }
 
     function showDetail(row, cell, activeButton) {
@@ -942,6 +1042,7 @@
       detailExample.textContent = cell.example;
       detailPractical.textContent = cell.practical;
       detailNotes.textContent = cell.notes;
+      renderMedia(cell);
       detailBenefits.innerHTML = '';
       cell.benefits.forEach(item => {
         const li = document.createElement('li');
@@ -966,6 +1067,7 @@
       cell.example = editExample.value.trim();
       cell.practical = editPractical.value.trim();
       cell.notes = editNotes.value.trim();
+      cell.mediaUrl = editMediaUrl.value.trim();
       cell.benefits = editBenefits.value
         .split('\n')
         .map(item => item.trim())
