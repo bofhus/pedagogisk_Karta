@@ -74,9 +74,38 @@
     }
 
     .role-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       font-weight: 700;
       font-size: 0.9rem;
       letter-spacing: 0.02em;
+    }
+
+    .role-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.15);
+      opacity: 0.65;
+      transition: opacity 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .role-pill.active {
+      opacity: 1;
+      background: #ffffff;
+      color: #1c3f5c;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.35);
+    }
+
+    .role-controls.is-admin {
+      background: rgba(94, 164, 61, 0.28);
+      border-color: rgba(94, 164, 61, 0.75);
+    }
+
+    .role-controls.is-admin .role-button {
+      background: #244d1c;
+      color: #ffffff;
     }
 
     .role-button,
@@ -404,8 +433,12 @@
         Första utgåva av en interaktiv matris där varje del är klickbar och visar ett konkret exempel.
         Den är byggd som en enkel, fristående HTML-fil för att du senare ska kunna vidareutveckla den i Codex utan att behöva gräva i ett ramverk som någon överentusiastisk människa valde för att känna sig modern.
       </p>
-      <div class="role-controls">
-        <span class="role-status" id="role-status">Roll: Användare</span>
+      <div class="role-controls" id="role-controls">
+        <span class="role-status" id="role-status">
+          Aktiv roll:
+          <span class="role-pill active" id="role-user-pill">Användare</span>
+          <span class="role-pill" id="role-admin-pill">Administratör</span>
+        </span>
         <button class="role-button" id="role-toggle" type="button">Byt till administratör</button>
       </div>
     </section>
@@ -723,8 +756,11 @@
     const detailNotes = document.getElementById('detail-notes');
     const detailModal = document.getElementById('detail-modal');
     const closeModalButton = document.getElementById('close-modal');
+    const roleControls = document.getElementById('role-controls');
     const roleStatus = document.getElementById('role-status');
     const roleToggle = document.getElementById('role-toggle');
+    const roleUserPill = document.getElementById('role-user-pill');
+    const roleAdminPill = document.getElementById('role-admin-pill');
     const editorFields = document.getElementById('editor-fields');
     const editTitle = document.getElementById('edit-title');
     const editSummary = document.getElementById('edit-summary');
@@ -798,8 +834,11 @@
     }
 
     function updateRoleUI() {
-      roleStatus.textContent = `Roll: ${isAdmin ? 'Administratör' : 'Användare'}`;
+      roleStatus.setAttribute('aria-label', `Aktiv roll: ${isAdmin ? 'Administratör' : 'Användare'}`);
       roleToggle.textContent = isAdmin ? 'Byt till användare' : 'Byt till administratör';
+      roleUserPill.classList.toggle('active', !isAdmin);
+      roleAdminPill.classList.toggle('active', isAdmin);
+      roleControls.classList.toggle('is-admin', isAdmin);
       editorFields.classList.toggle('open', isAdmin && selectedCellIndex !== null);
     }
 
