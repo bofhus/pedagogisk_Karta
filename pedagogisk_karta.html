@@ -257,9 +257,24 @@
     }
 
     .row-header .method {
-      display: block;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       font-size: 1rem;
       font-weight: 700;
+    }
+
+    .method-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.42);
+      font-size: 1.1rem;
+      line-height: 1;
     }
 
     .row-bas { background: var(--bas); }
@@ -278,6 +293,8 @@
       width: 100%;
       height: 100%;
       min-height: 116px;
+      display: flex;
+      flex-direction: column;
       border: none;
       border-radius: 18px;
       padding: 16px;
@@ -304,7 +321,28 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--muted);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+    }
+
+    .cell .topline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .cell .icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      font-size: 1.1rem;
+      background: #eaf1f9;
+      border: 1px solid #cfdeec;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
     }
 
     .cell .title {
@@ -313,6 +351,10 @@
       font-weight: 800;
       margin-bottom: 8px;
       line-height: 1.25;
+    }
+
+    .cell .topline .title {
+      margin-bottom: 0;
     }
 
     .cell .summary {
@@ -786,6 +828,21 @@
     let selectedCellIndex = null;
     let data = loadData();
 
+    const rowIcons = {
+      'PDF / Dokument': '📄',
+      'Quiz / Interaktivt test': '❓',
+      'Video / Genomgång': '🎬',
+      'Simulering / Scenario': '🧩',
+      'XR / Immersiv miljö': '🥽'
+    };
+
+    const cellIcons = {
+      'Kunskapsinhämtning': '📘',
+      'Förståelse / Fördjupning': '🧠',
+      'Träning / Tillämpning': '🛠️',
+      'Examination / Återkoppling': '✅'
+    };
+
     function loadData() {
       const storedData = localStorage.getItem(STORAGE_KEY);
       if (!storedData) return structuredClone(initialData);
@@ -819,7 +876,7 @@
         const rowHeader = document.createElement('th');
         rowHeader.className = `row-header ${row.rowClass}`;
         rowHeader.scope = 'row';
-        rowHeader.innerHTML = `<span class="level">${row.level}</span><span class="method">${row.method}</span>`;
+        rowHeader.innerHTML = `<span class="level">${row.level}</span><span class="method"><span class="method-icon" aria-hidden="true">${rowIcons[row.method] ?? '📌'}</span>${row.method}</span>`;
         tr.appendChild(rowHeader);
 
         row.cells.forEach((cell, cellIndex) => {
@@ -832,7 +889,10 @@
           button.dataset.cell = cellIndex;
           button.innerHTML = `
             <span class="tag">${row.method}</span>
-            <span class="title">${cell.title}</span>
+            <span class="topline">
+              <span class="icon" aria-hidden="true">${cellIcons[cell.category] ?? '📌'}</span>
+              <span class="title">${cell.title}</span>
+            </span>
             <span class="summary">${cell.summary}</span>
           `;
           button.addEventListener('click', () => showDetail(row, cell, button));
