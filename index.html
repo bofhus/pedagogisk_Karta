@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pedagogisk karta över utbildningsdesign</title>
+  <title>Pedagogisk karta Ã¶ver utbildningsdesign</title>
   <style>
     :root {
       --bg: #eef4fb;
@@ -59,6 +59,118 @@
       max-width: 900px;
       color: #f4f8fc;
       font-size: 1rem;
+    }
+
+    .role-controls {
+      margin: 18px auto 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      color: #fff;
+    }
+
+    .role-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+    }
+
+    .role-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.15);
+      opacity: 0.65;
+      transition: opacity 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .role-pill.active {
+      opacity: 1;
+      background: #ffffff;
+      color: #1c3f5c;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.35);
+    }
+
+    .role-controls.is-admin {
+      background: rgba(94, 164, 61, 0.28);
+      border-color: rgba(94, 164, 61, 0.75);
+    }
+
+    .role-controls.is-admin .role-button {
+      background: #3b4a56;
+      color: #e8eff6;
+      border-color: #667888;
+    }
+
+    .role-button,
+    .save-button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #c6d0da;
+      color: #1f3548;
+    }
+
+    .role-button {
+      border: 1px solid #9fb0bf;
+    }
+
+    .role-button:hover,
+    .role-button:focus-visible {
+      background: #b6c2ce;
+      outline: 2px solid #8fa5b8;
+      outline-offset: 1px;
+    }
+
+    .save-button {
+      border-radius: 12px;
+      background: #5ea43d;
+      color: #fff;
+      margin-top: 14px;
+    }
+
+    .editor-fields {
+      margin-top: 16px;
+      display: none;
+      gap: 12px;
+    }
+
+    .editor-fields.open {
+      display: grid;
+    }
+
+    .editor-fields label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #2c4e6b;
+    }
+
+    .editor-fields input,
+    .editor-fields textarea {
+      border: 1px solid #c3d4e4;
+      border-radius: 10px;
+      padding: 10px;
+      font: inherit;
+      color: #17324a;
+      resize: vertical;
+      min-height: 42px;
+    }
+
+    .editor-hint {
+      margin: 0;
+      color: #5d7387;
+      font-size: 0.84rem;
     }
 
     .layout {
@@ -145,9 +257,24 @@
     }
 
     .row-header .method {
-      display: block;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       font-size: 1rem;
       font-weight: 700;
+    }
+
+    .method-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.42);
+      font-size: 1.1rem;
+      line-height: 1;
     }
 
     .row-bas { background: var(--bas); }
@@ -166,6 +293,8 @@
       width: 100%;
       height: 100%;
       min-height: 116px;
+      display: flex;
+      flex-direction: column;
       border: none;
       border-radius: 18px;
       padding: 16px;
@@ -192,7 +321,28 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--muted);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+    }
+
+    .cell .topline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .cell .icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      font-size: 1.1rem;
+      background: #eaf1f9;
+      border: 1px solid #cfdeec;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
     }
 
     .cell .title {
@@ -201,6 +351,10 @@
       font-weight: 800;
       margin-bottom: 8px;
       line-height: 1.25;
+    }
+
+    .cell .topline .title {
+      margin-bottom: 0;
     }
 
     .cell .summary {
@@ -328,11 +482,19 @@
 <body>
   <div class="page">
     <section class="hero">
-      <h1>Pedagogisk karta över utbildningsdesign</h1>
+      <h1>Pedagogisk karta Ã¶ver utbildningsdesign</h1>
       <p>
-        Första utgåva av en interaktiv matris där varje del är klickbar och visar ett konkret exempel.
-        Den är byggd som en enkel, fristående HTML-fil för att du senare ska kunna vidareutveckla den i Codex utan att behöva gräva i ett ramverk som någon överentusiastisk människa valde för att känna sig modern.
+        FÃ¶rsta utgÃ¥va av en interaktiv matris dÃ¤r varje del Ã¤r klickbar och visar ett konkret exempel.
+        Den Ã¤r byggd som en enkel, fristÃ¥ende HTML-fil fÃ¶r att du senare ska kunna vidareutveckla den i Codex utan att behÃ¶va grÃ¤va i ett ramverk som nÃ¥gon Ã¶verentusiastisk mÃ¤nniska valde fÃ¶r att kÃ¤nna sig modern.
       </p>
+      <div class="role-controls" id="role-controls">
+        <span class="role-status" id="role-status">
+          Aktiv roll:
+          <span class="role-pill active" id="role-user-pill">AnvÃ¤ndare</span>
+          <span class="role-pill" id="role-admin-pill">AdministratÃ¶r</span>
+        </span>
+        <button class="role-button" id="role-toggle" type="button">Byt till administratÃ¶r</button>
+      </div>
     </section>
 
     <div class="layout">
@@ -341,11 +503,11 @@
           <table class="matrix">
             <thead>
               <tr>
-                <th class="corner">Genomförandesätt ↓<br>Utbildningsdel →</th>
-                <th class="column-header col-1">Kunskapsinhämtning</th>
-                <th class="column-header col-2">Förståelse / Fördjupning</th>
-                <th class="column-header col-3">Träning / Tillämpning</th>
-                <th class="column-header col-4">Examination / Återkoppling</th>
+                <th class="corner">GenomfÃ¶randesÃ¤tt â†“<br>Utbildningsdel â†’</th>
+                <th class="column-header col-1">KunskapsinhÃ¤mtning</th>
+                <th class="column-header col-2">FÃ¶rstÃ¥else / FÃ¶rdjupning</th>
+                <th class="column-header col-3">TrÃ¤ning / TillÃ¤mpning</th>
+                <th class="column-header col-4">Examination / Ã…terkoppling</th>
               </tr>
             </thead>
             <tbody id="matrix-body"></tbody>
@@ -358,22 +520,22 @@
     <div class="modal" id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title">
       <aside class="detail-card" aria-live="polite">
         <div class="detail-header">
-          <h2 id="detail-title">Välj en ruta</h2>
-          <button class="close-button" id="close-modal" type="button" aria-label="Stäng popup">×</button>
+          <h2 id="detail-title">VÃ¤lj en ruta</h2>
+          <button class="close-button" id="close-modal" type="button" aria-label="StÃ¤ng popup">Ã—</button>
         </div>
         <div class="detail-meta" id="detail-meta"></div>
         <p id="detail-intro">
-          Klicka på en exempeldel i matrisen för att visa ett konkret exempel, syfte, genomförande och vad som krävs.
+          Klicka pÃ¥ en exempeldel i matrisen fÃ¶r att visa ett konkret exempel, syfte, genomfÃ¶rande och vad som krÃ¤vs.
         </p>
 
         <div class="detail-section">
           <h3>Exempel</h3>
-          <p id="detail-example">Här visas exempeltext för vald ruta.</p>
+          <p id="detail-example">HÃ¤r visas exempeltext fÃ¶r vald ruta.</p>
         </div>
 
         <div class="detail-section">
-          <h3>Praktiskt genomförande</h3>
-          <p id="detail-practical">Här visas hur momentet kan genomföras i praktiken.</p>
+          <h3>Praktiskt genomfÃ¶rande</h3>
+          <p id="detail-practical">HÃ¤r visas hur momentet kan genomfÃ¶ras i praktiken.</p>
         </div>
 
         <div class="detail-section">
@@ -382,59 +544,82 @@
         </div>
 
         <div class="detail-section">
-          <h3>Att tänka på</h3>
-          <p id="detail-notes">Här visas råd och begränsningar.</p>
+          <h3>Att tÃ¤nka pÃ¥</h3>
+          <p id="detail-notes">HÃ¤r visas rÃ¥d och begrÃ¤nsningar.</p>
         </div>
 
         <p class="footer-note">
-          Tips: Nästa version kan få sök, filtrering, export av exempel och en redaktörsvy för att lägga in egna exempel per ruta.
+          Tips: NÃ¤sta version kan fÃ¥ sÃ¶k, filtrering, export av exempel och en redaktÃ¶rsvy fÃ¶r att lÃ¤gga in egna exempel per ruta.
         </p>
+
+        <div class="editor-fields" id="editor-fields">
+          <p class="editor-hint">AdministratÃ¶rslÃ¤ge: redigera texten nedan och spara Ã¤ndringarna.</p>
+          <label>Titel
+            <input type="text" id="edit-title">
+          </label>
+          <label>Sammanfattning (visas i matris + popup)
+            <textarea id="edit-summary"></textarea>
+          </label>
+          <label>Exempel
+            <textarea id="edit-example"></textarea>
+          </label>
+          <label>Praktiskt genomfÃ¶rande
+            <textarea id="edit-practical"></textarea>
+          </label>
+          <label>Vad det ger (en punkt per rad)
+            <textarea id="edit-benefits"></textarea>
+          </label>
+          <label>Att tÃ¤nka pÃ¥
+            <textarea id="edit-notes"></textarea>
+          </label>
+          <button class="save-button" id="save-cell" type="button">Spara Ã¤ndringar</button>
+        </div>
       </aside>
     </div>
   </div>
 
   <script>
-    const data = [
+    const initialData = [
       {
         level: 'Bas',
         method: 'PDF / Dokument',
         rowClass: 'row-bas',
         cells: [
           {
-            category: 'Kunskapsinhämtning',
+            category: 'KunskapsinhÃ¤mtning',
             title: 'Teoritext',
             summary: 'Kort faktablad eller styrdokument med grundbegrepp.',
-            example: 'En PDF på 4 sidor som beskriver grunderna i informationssäkerhet, centrala begrepp och roller i verksamheten.',
-            practical: 'Publiceras i lärplattform eller intranät. Deltagaren läser materialet före nästa moment och kvitterar genomfört moment.',
-            benefits: ['Enkelt att producera', 'Låg teknisk tröskel', 'Fungerar väl för styrande innehåll'],
-            notes: 'Bra för grundkunskap, men riskerar passiv konsumtion om den inte kombineras med frågor eller diskussion.'
+            example: 'En PDF pÃ¥ 4 sidor som beskriver grunderna i informationssÃ¤kerhet, centrala begrepp och roller i verksamheten.',
+            practical: 'Publiceras i lÃ¤rplattform eller intranÃ¤t. Deltagaren lÃ¤ser materialet fÃ¶re nÃ¤sta moment och kvitterar genomfÃ¶rt moment.',
+            benefits: ['Enkelt att producera', 'LÃ¥g teknisk trÃ¶skel', 'Fungerar vÃ¤l fÃ¶r styrande innehÃ¥ll'],
+            notes: 'Bra fÃ¶r grundkunskap, men riskerar passiv konsumtion om den inte kombineras med frÃ¥gor eller diskussion.'
           },
           {
-            category: 'Förståelse / Fördjupning',
-            title: 'Fördjupande läsanvisning',
-            summary: 'Styrd läsning med frågor som hjälper tolkning.',
-            example: 'Deltagaren får läsa ett fall och besvara tre öppna reflektionsfrågor kring risk, ansvar och avvägningar.',
-            practical: 'Läggs som bilaga till dokumentet eller som instruktion i kursplattformen. Svar kan lämnas i fritextfält eller diskuteras i grupp.',
-            benefits: ['Ökar aktiv läsning', 'Stödjer analys', 'Fungerar i nästan alla utbildningar'],
-            notes: 'Kräver tydliga frågor. Annars blir det bara mer text, vilket mänskligheten redan producerar i överflöd.'
+            category: 'FÃ¶rstÃ¥else / FÃ¶rdjupning',
+            title: 'FÃ¶rdjupande lÃ¤sanvisning',
+            summary: 'Styrd lÃ¤sning med frÃ¥gor som hjÃ¤lper tolkning.',
+            example: 'Deltagaren fÃ¥r lÃ¤sa ett fall och besvara tre Ã¶ppna reflektionsfrÃ¥gor kring risk, ansvar och avvÃ¤gningar.',
+            practical: 'LÃ¤ggs som bilaga till dokumentet eller som instruktion i kursplattformen. Svar kan lÃ¤mnas i fritextfÃ¤lt eller diskuteras i grupp.',
+            benefits: ['Ã–kar aktiv lÃ¤sning', 'StÃ¶djer analys', 'Fungerar i nÃ¤stan alla utbildningar'],
+            notes: 'KrÃ¤ver tydliga frÃ¥gor. Annars blir det bara mer text, vilket mÃ¤nskligheten redan producerar i Ã¶verflÃ¶d.'
           },
           {
-            category: 'Träning / Tillämpning',
+            category: 'TrÃ¤ning / TillÃ¤mpning',
             title: 'Case-uppgifter',
-            summary: 'Textbaserade scenarier där deltagaren väljer åtgärd.',
-            example: 'Deltagaren får ett scenario om störd verksamhet och ska beskriva vilka åtgärder som bör prioriteras först.',
-            practical: 'Kan genomföras individuellt eller i grupp. Svaren diskuteras med handledare eller jämförs mot facit.',
-            benefits: ['Låg kostnad', 'Bygger tillämpning', 'Bra bro mellan teori och praktik'],
-            notes: 'Blir bättre om caset känns verklighetsnära och knyts till den egna verksamheten.'
+            summary: 'Textbaserade scenarier dÃ¤r deltagaren vÃ¤ljer Ã¥tgÃ¤rd.',
+            example: 'Deltagaren fÃ¥r ett scenario om stÃ¶rd verksamhet och ska beskriva vilka Ã¥tgÃ¤rder som bÃ¶r prioriteras fÃ¶rst.',
+            practical: 'Kan genomfÃ¶ras individuellt eller i grupp. Svaren diskuteras med handledare eller jÃ¤mfÃ¶rs mot facit.',
+            benefits: ['LÃ¥g kostnad', 'Bygger tillÃ¤mpning', 'Bra bro mellan teori och praktik'],
+            notes: 'Blir bÃ¤ttre om caset kÃ¤nns verklighetsnÃ¤ra och knyts till den egna verksamheten.'
           },
           {
-            category: 'Examination / Återkoppling',
-            title: 'Reflektionsfrågor',
-            summary: 'Skriftliga frågor som visar hur deltagaren resonerar.',
-            example: 'Efter avslutat moment svarar deltagaren på vad som var mest kritiskt, vad som var svårt och hur kunskapen ska användas i arbetet.',
-            practical: 'Besvaras i lärplattform, i dokumentmall eller muntligt i handledd grupp.',
-            benefits: ['Ger kvalitativ återkoppling', 'Stödjer transfer till arbetet', 'Bra för chef och handledare'],
-            notes: 'Mäter resonemang bättre än rena faktatest, men tar längre tid att bedöma.'
+            category: 'Examination / Ã…terkoppling',
+            title: 'ReflektionsfrÃ¥gor',
+            summary: 'Skriftliga frÃ¥gor som visar hur deltagaren resonerar.',
+            example: 'Efter avslutat moment svarar deltagaren pÃ¥ vad som var mest kritiskt, vad som var svÃ¥rt och hur kunskapen ska anvÃ¤ndas i arbetet.',
+            practical: 'Besvaras i lÃ¤rplattform, i dokumentmall eller muntligt i handledd grupp.',
+            benefits: ['Ger kvalitativ Ã¥terkoppling', 'StÃ¶djer transfer till arbetet', 'Bra fÃ¶r chef och handledare'],
+            notes: 'MÃ¤ter resonemang bÃ¤ttre Ã¤n rena faktatest, men tar lÃ¤ngre tid att bedÃ¶ma.'
           }
         ]
       },
@@ -444,83 +629,83 @@
         rowClass: 'row-interaktiv',
         cells: [
           {
-            category: 'Kunskapsinhämtning',
+            category: 'KunskapsinhÃ¤mtning',
             title: 'Kunskapstest',
-            summary: 'Snabba frågor som aktiverar grundkunskap.',
-            example: 'Fem flervalsfrågor om centrala begrepp direkt efter introduktionsmaterialet.',
-            practical: 'Byggs i lärplattform eller enkel webbmodul. Direkt återkoppling visas efter varje fråga.',
-            benefits: ['Omedelbar feedback', 'Lätt att följa upp', 'Bra repetition'],
-            notes: 'Passar fakta och begrepp. Mindre lämpligt för komplexa bedömningar.'
+            summary: 'Snabba frÃ¥gor som aktiverar grundkunskap.',
+            example: 'Fem flervalsfrÃ¥gor om centrala begrepp direkt efter introduktionsmaterialet.',
+            practical: 'Byggs i lÃ¤rplattform eller enkel webbmodul. Direkt Ã¥terkoppling visas efter varje frÃ¥ga.',
+            benefits: ['Omedelbar feedback', 'LÃ¤tt att fÃ¶lja upp', 'Bra repetition'],
+            notes: 'Passar fakta och begrepp. Mindre lÃ¤mpligt fÃ¶r komplexa bedÃ¶mningar.'
           },
           {
-            category: 'Förståelse / Fördjupning',
+            category: 'FÃ¶rstÃ¥else / FÃ¶rdjupning',
             title: 'Begrepps-quiz',
-            summary: 'Frågor som testar om deltagaren förstår samband.',
-            example: 'Deltagaren matchar begrepp med rätt konsekvens, ansvarsnivå eller tillämpning i ett scenario.',
-            practical: 'Kan byggas som matchning, rangordning eller flervalsfrågor med motivering.',
-            benefits: ['Mäter mer än minne', 'Tvingar fram tolkning', 'Skalbart för många deltagare'],
-            notes: 'Blir starkare om felaktiga svar får förklaringar, inte bara röd markering som om systemet vore surmulet.'
+            summary: 'FrÃ¥gor som testar om deltagaren fÃ¶rstÃ¥r samband.',
+            example: 'Deltagaren matchar begrepp med rÃ¤tt konsekvens, ansvarsnivÃ¥ eller tillÃ¤mpning i ett scenario.',
+            practical: 'Kan byggas som matchning, rangordning eller flervalsfrÃ¥gor med motivering.',
+            benefits: ['MÃ¤ter mer Ã¤n minne', 'Tvingar fram tolkning', 'Skalbart fÃ¶r mÃ¥nga deltagare'],
+            notes: 'Blir starkare om felaktiga svar fÃ¥r fÃ¶rklaringar, inte bara rÃ¶d markering som om systemet vore surmulet.'
           },
           {
-            category: 'Träning / Tillämpning',
-            title: 'Scenariofrågor',
-            summary: 'Grenade frågor där val påverkar nästa steg.',
-            example: 'Deltagaren får välja hur en incident ska hanteras. Varje val leder vidare till ny information och nya beslut.',
-            practical: 'Kan byggas i H5P, Storyline eller egen HTML-logik. Varje väg ger särskild återkoppling.',
-            benefits: ['Efterliknar beslutssituationer', 'Engagerar mer än statiskt material', 'Bra för tillämpning på distans'],
-            notes: 'Kräver genomtänkt logik så att inte allt känns slumpmässigt.'
+            category: 'TrÃ¤ning / TillÃ¤mpning',
+            title: 'ScenariofrÃ¥gor',
+            summary: 'Grenade frÃ¥gor dÃ¤r val pÃ¥verkar nÃ¤sta steg.',
+            example: 'Deltagaren fÃ¥r vÃ¤lja hur en incident ska hanteras. Varje val leder vidare till ny information och nya beslut.',
+            practical: 'Kan byggas i H5P, Storyline eller egen HTML-logik. Varje vÃ¤g ger sÃ¤rskild Ã¥terkoppling.',
+            benefits: ['Efterliknar beslutssituationer', 'Engagerar mer Ã¤n statiskt material', 'Bra fÃ¶r tillÃ¤mpning pÃ¥ distans'],
+            notes: 'KrÃ¤ver genomtÃ¤nkt logik sÃ¥ att inte allt kÃ¤nns slumpmÃ¤ssigt.'
           },
           {
-            category: 'Examination / Återkoppling',
+            category: 'Examination / Ã…terkoppling',
             title: 'Automatiskt test',
-            summary: 'Digital examination med poäng, gränsvärden och återkoppling.',
-            example: 'Ett avslutande test med 20 frågor där minst 80 procent rätt krävs för godkänt.',
-            practical: 'Resultat lagras i lärplattform och kan användas för statistik, repetition och uppföljning.',
-            benefits: ['Effektivt för stora grupper', 'Spårbart', 'Likvärdig bedömning'],
-            notes: 'Mäter bäst tydligt definierad kunskap. Komplettera gärna med tillämpning om förmåga ska bedömas.'
+            summary: 'Digital examination med poÃ¤ng, grÃ¤nsvÃ¤rden och Ã¥terkoppling.',
+            example: 'Ett avslutande test med 20 frÃ¥gor dÃ¤r minst 80 procent rÃ¤tt krÃ¤vs fÃ¶r godkÃ¤nt.',
+            practical: 'Resultat lagras i lÃ¤rplattform och kan anvÃ¤ndas fÃ¶r statistik, repetition och uppfÃ¶ljning.',
+            benefits: ['Effektivt fÃ¶r stora grupper', 'SpÃ¥rbart', 'LikvÃ¤rdig bedÃ¶mning'],
+            notes: 'MÃ¤ter bÃ¤st tydligt definierad kunskap. Komplettera gÃ¤rna med tillÃ¤mpning om fÃ¶rmÃ¥ga ska bedÃ¶mas.'
           }
         ]
       },
       {
-        level: 'Tillämpning',
-        method: 'Video / Genomgång',
+        level: 'TillÃ¤mpning',
+        method: 'Video / GenomgÃ¥ng',
         rowClass: 'row-tillampning',
         cells: [
           {
-            category: 'Kunskapsinhämtning',
-            title: 'Föreläsning',
-            summary: 'Inspelad genomgång som ger en gemensam grund.',
-            example: 'En 8-minuters videogenomgång där instruktören förklarar syfte, centrala moment och vanliga fel.',
-            practical: 'Publiceras som inspelad film med kapitelmarkörer och gärna ett efterföljande kunskapstest.',
-            benefits: ['Enhetligt budskap', 'Bra för distribuerad utbildning', 'Lätt att återanvända'],
-            notes: 'Videor bör vara korta och fokuserade. Långa monologer är ett brott mot koncentrationsförmågan.'
+            category: 'KunskapsinhÃ¤mtning',
+            title: 'FÃ¶relÃ¤sning',
+            summary: 'Inspelad genomgÃ¥ng som ger en gemensam grund.',
+            example: 'En 8-minuters videogenomgÃ¥ng dÃ¤r instruktÃ¶ren fÃ¶rklarar syfte, centrala moment och vanliga fel.',
+            practical: 'Publiceras som inspelad film med kapitelmarkÃ¶rer och gÃ¤rna ett efterfÃ¶ljande kunskapstest.',
+            benefits: ['Enhetligt budskap', 'Bra fÃ¶r distribuerad utbildning', 'LÃ¤tt att Ã¥teranvÃ¤nda'],
+            notes: 'Videor bÃ¶r vara korta och fokuserade. LÃ¥nga monologer Ã¤r ett brott mot koncentrationsfÃ¶rmÃ¥gan.'
           },
           {
-            category: 'Förståelse / Fördjupning',
+            category: 'FÃ¶rstÃ¥else / FÃ¶rdjupning',
             title: 'Demonstration',
-            summary: 'Visar hur ett moment faktiskt utförs.',
-            example: 'Instruktören visar steg för steg hur ett system används eller hur en procedur ska genomföras i rätt ordning.',
-            practical: 'Filmas från rätt perspektiv, gärna med grafik och tydliga stoppunkter där deltagaren ombeds tänka efter.',
-            benefits: ['Visualiserar arbetsgång', 'Minskar tolkningsfel', 'Bra stöd inför praktisk övning'],
-            notes: 'Bör kombineras med egen aktivitet. Att bara titta är inte samma sak som att kunna.'
+            summary: 'Visar hur ett moment faktiskt utfÃ¶rs.',
+            example: 'InstruktÃ¶ren visar steg fÃ¶r steg hur ett system anvÃ¤nds eller hur en procedur ska genomfÃ¶ras i rÃ¤tt ordning.',
+            practical: 'Filmas frÃ¥n rÃ¤tt perspektiv, gÃ¤rna med grafik och tydliga stoppunkter dÃ¤r deltagaren ombeds tÃ¤nka efter.',
+            benefits: ['Visualiserar arbetsgÃ¥ng', 'Minskar tolkningsfel', 'Bra stÃ¶d infÃ¶r praktisk Ã¶vning'],
+            notes: 'BÃ¶r kombineras med egen aktivitet. Att bara titta Ã¤r inte samma sak som att kunna.'
           },
           {
-            category: 'Träning / Tillämpning',
+            category: 'TrÃ¤ning / TillÃ¤mpning',
             title: 'Exempelanalys',
-            summary: 'Video eller genomgång där deltagaren analyserar ett exempel.',
-            example: 'Deltagaren ser ett inspelat händelseförlopp och ska identifiera vad som gjordes rätt, fel och varför.',
-            practical: 'Kan användas i klassrum eller på distans. Pausa videon vid nyckelpunkter och låt deltagarna motivera sina svar.',
-            benefits: ['Tränar bedömning', 'Ger gemensam diskussionsgrund', 'Stödjer reflektion'],
-            notes: 'Bra när man vill komma åt resonemang utan att bygga full simulering.'
+            summary: 'Video eller genomgÃ¥ng dÃ¤r deltagaren analyserar ett exempel.',
+            example: 'Deltagaren ser ett inspelat hÃ¤ndelsefÃ¶rlopp och ska identifiera vad som gjordes rÃ¤tt, fel och varfÃ¶r.',
+            practical: 'Kan anvÃ¤ndas i klassrum eller pÃ¥ distans. Pausa videon vid nyckelpunkter och lÃ¥t deltagarna motivera sina svar.',
+            benefits: ['TrÃ¤nar bedÃ¶mning', 'Ger gemensam diskussionsgrund', 'StÃ¶djer reflektion'],
+            notes: 'Bra nÃ¤r man vill komma Ã¥t resonemang utan att bygga full simulering.'
           },
           {
-            category: 'Examination / Återkoppling',
-            title: 'Muntligt förhör',
-            summary: 'Samtalsbaserad kontroll av förståelse och resonemang.',
-            example: 'Deltagaren får redogöra för hur ett problem ska hanteras och motivera sitt val av åtgärder inför handledare.',
-            practical: 'Genomförs fysiskt eller via videomöte med bedömningsstöd och tydliga kriterier.',
-            benefits: ['Prövar förståelse på djupet', 'Ger direkt återkoppling', 'Bra för komplexa frågor'],
-            notes: 'Kräver tid och bedömarkompetens. Passar bäst där kvalitet väger tyngre än masshantering.'
+            category: 'Examination / Ã…terkoppling',
+            title: 'Muntligt fÃ¶rhÃ¶r',
+            summary: 'Samtalsbaserad kontroll av fÃ¶rstÃ¥else och resonemang.',
+            example: 'Deltagaren fÃ¥r redogÃ¶ra fÃ¶r hur ett problem ska hanteras och motivera sitt val av Ã¥tgÃ¤rder infÃ¶r handledare.',
+            practical: 'GenomfÃ¶rs fysiskt eller via videomÃ¶te med bedÃ¶mningsstÃ¶d och tydliga kriterier.',
+            benefits: ['PrÃ¶var fÃ¶rstÃ¥else pÃ¥ djupet', 'Ger direkt Ã¥terkoppling', 'Bra fÃ¶r komplexa frÃ¥gor'],
+            notes: 'KrÃ¤ver tid och bedÃ¶markompetens. Passar bÃ¤st dÃ¤r kvalitet vÃ¤ger tyngre Ã¤n masshantering.'
           }
         ]
       },
@@ -530,87 +715,90 @@
         rowClass: 'row-sim',
         cells: [
           {
-            category: 'Kunskapsinhämtning',
+            category: 'KunskapsinhÃ¤mtning',
             title: 'Situationsspel',
-            summary: 'En enkel simulering som sätter kunskap i kontext.',
-            example: 'Deltagaren går igenom ett tidslinjebaserat scenario där information tillkommer stegvis och påverkar förståelsen.',
-            practical: 'Kan byggas som bordsspel, digitalt scenario eller lärarledd övning med spelkort och injektioner.',
-            benefits: ['Skapar sammanhang', 'Ökar motivation', 'Förbereder för övning'],
-            notes: 'Behöver inte vara tekniskt avancerat. Struktur slår ofta glitter.'
+            summary: 'En enkel simulering som sÃ¤tter kunskap i kontext.',
+            example: 'Deltagaren gÃ¥r igenom ett tidslinjebaserat scenario dÃ¤r information tillkommer stegvis och pÃ¥verkar fÃ¶rstÃ¥elsen.',
+            practical: 'Kan byggas som bordsspel, digitalt scenario eller lÃ¤rarledd Ã¶vning med spelkort och injektioner.',
+            benefits: ['Skapar sammanhang', 'Ã–kar motivation', 'FÃ¶rbereder fÃ¶r Ã¶vning'],
+            notes: 'BehÃ¶ver inte vara tekniskt avancerat. Struktur slÃ¥r ofta glitter.'
           },
           {
-            category: 'Förståelse / Fördjupning',
-            title: 'Beslutsövning',
-            summary: 'Deltagaren tränar att väga alternativ under osäkerhet.',
-            example: 'En grupp får bedöma flera handlingsalternativ under tidspress och redovisa varför ett visst beslut valdes.',
-            practical: 'Använd facilitator, beslutsunderlag och tydlig återkoppling efteråt om konsekvenser och vägval.',
-            benefits: ['Tränar analys och prioritering', 'Ger god gruppdynamik', 'Passar chefs- och stabsutbildning'],
-            notes: 'Blir bäst när återkopplingen visar konsekvenser, inte bara rätt eller fel.'
+            category: 'FÃ¶rstÃ¥else / FÃ¶rdjupning',
+            title: 'BeslutsÃ¶vning',
+            summary: 'Deltagaren trÃ¤nar att vÃ¤ga alternativ under osÃ¤kerhet.',
+            example: 'En grupp fÃ¥r bedÃ¶ma flera handlingsalternativ under tidspress och redovisa varfÃ¶r ett visst beslut valdes.',
+            practical: 'AnvÃ¤nd facilitator, beslutsunderlag och tydlig Ã¥terkoppling efterÃ¥t om konsekvenser och vÃ¤gval.',
+            benefits: ['TrÃ¤nar analys och prioritering', 'Ger god gruppdynamik', 'Passar chefs- och stabsutbildning'],
+            notes: 'Blir bÃ¤st nÃ¤r Ã¥terkopplingen visar konsekvenser, inte bara rÃ¤tt eller fel.'
           },
           {
-            category: 'Träning / Tillämpning',
+            category: 'TrÃ¤ning / TillÃ¤mpning',
             title: 'Praktiskt scenario',
-            summary: 'Tillämpning i ett realistiskt men kontrollerat förlopp.',
-            example: 'Deltagaren får hantera ett eskalerande läge med inkommande rapporter, resursbrister och motstridiga prioriteringar.',
-            practical: 'Kräver scenarioledare, spelplan, tidssatta händelser och tydliga lärandemål per moment.',
-            benefits: ['Hög relevans', 'Tränar handlingsberedskap', 'Bra för samverkan'],
-            notes: 'Viktigt att scenariot inte bara blir teater. Det ska vara kopplat till faktisk förmåga.'
+            summary: 'TillÃ¤mpning i ett realistiskt men kontrollerat fÃ¶rlopp.',
+            example: 'Deltagaren fÃ¥r hantera ett eskalerande lÃ¤ge med inkommande rapporter, resursbrister och motstridiga prioriteringar.',
+            practical: 'KrÃ¤ver scenarioledare, spelplan, tidssatta hÃ¤ndelser och tydliga lÃ¤randemÃ¥l per moment.',
+            benefits: ['HÃ¶g relevans', 'TrÃ¤nar handlingsberedskap', 'Bra fÃ¶r samverkan'],
+            notes: 'Viktigt att scenariot inte bara blir teater. Det ska vara kopplat till faktisk fÃ¶rmÃ¥ga.'
           },
           {
-            category: 'Examination / Återkoppling',
+            category: 'Examination / Ã…terkoppling',
             title: 'Scenario-prov',
-            summary: 'Bedömning i eller efter en genomförd simulering.',
-            example: 'Bedömning sker mot kriterier som beslutskvalitet, samverkan, tempo och förmåga att anpassa sig till förändrad information.',
-            practical: 'Använd observationsmall, bedömare och strukturerad återkoppling direkt efter genomförandet.',
-            benefits: ['Mäter förmåga i kontext', 'Ger rik återkoppling', 'Hög trovärdighet'],
-            notes: 'Mer resurskrävande, men också betydligt närmare verklig prestation än ett vanligt prov.'
+            summary: 'BedÃ¶mning i eller efter en genomfÃ¶rd simulering.',
+            example: 'BedÃ¶mning sker mot kriterier som beslutskvalitet, samverkan, tempo och fÃ¶rmÃ¥ga att anpassa sig till fÃ¶rÃ¤ndrad information.',
+            practical: 'AnvÃ¤nd observationsmall, bedÃ¶mare och strukturerad Ã¥terkoppling direkt efter genomfÃ¶randet.',
+            benefits: ['MÃ¤ter fÃ¶rmÃ¥ga i kontext', 'Ger rik Ã¥terkoppling', 'HÃ¶g trovÃ¤rdighet'],
+            notes: 'Mer resurskrÃ¤vande, men ocksÃ¥ betydligt nÃ¤rmare verklig prestation Ã¤n ett vanligt prov.'
           }
         ]
       },
       {
         level: 'Immersiv',
-        method: 'XR / Immersiv miljö',
+        method: 'XR / Immersiv miljÃ¶',
         rowClass: 'row-immersiv',
         cells: [
           {
-            category: 'Kunskapsinhämtning',
-            title: 'Virtuell miljö',
-            summary: 'Deltagaren orienterar sig i en miljö snarare än att bara läsa om den.',
-            example: 'En XR-miljö där deltagaren lär känna en anläggning, identifierar riskpunkter och förstår flöden i rummet.',
-            practical: 'Kan byggas som 360-miljö, VR-scenario eller enklare klickbar 3D-vy beroende på budget och behov.',
-            benefits: ['Stark situationsbild', 'Bra för miljö- och objektskunskap', 'Minnesstödjande'],
-            notes: 'Använd när rumslig förståelse verkligen betyder något. Inte bara för att headset ser futuristiska ut på möten.'
+            category: 'KunskapsinhÃ¤mtning',
+            title: 'Virtuell miljÃ¶',
+            summary: 'Deltagaren orienterar sig i en miljÃ¶ snarare Ã¤n att bara lÃ¤sa om den.',
+            example: 'En XR-miljÃ¶ dÃ¤r deltagaren lÃ¤r kÃ¤nna en anlÃ¤ggning, identifierar riskpunkter och fÃ¶rstÃ¥r flÃ¶den i rummet.',
+            practical: 'Kan byggas som 360-miljÃ¶, VR-scenario eller enklare klickbar 3D-vy beroende pÃ¥ budget och behov.',
+            benefits: ['Stark situationsbild', 'Bra fÃ¶r miljÃ¶- och objektskunskap', 'MinnesstÃ¶djande'],
+            notes: 'AnvÃ¤nd nÃ¤r rumslig fÃ¶rstÃ¥else verkligen betyder nÃ¥got. Inte bara fÃ¶r att headset ser futuristiska ut pÃ¥ mÃ¶ten.'
           },
           {
-            category: 'Förståelse / Fördjupning',
-            title: 'Situationsförståelse',
-            summary: 'Deltagaren tolkar vad som händer i en realistisk miljö.',
-            example: 'I en virtuell miljö ska deltagaren identifiera avvikelser, risker och kritiska signaler innan situationen eskalerar.',
-            practical: 'Byggs med tydliga observationsmål och återkoppling på vad deltagaren uppmärksammat eller missat.',
-            benefits: ['Tränar uppmärksamhet', 'Bra för säkerhetskritiska moment', 'Ger hög närvaro'],
-            notes: 'Viktigast är designen av uppgiften, inte tekniken i sig.'
+            category: 'FÃ¶rstÃ¥else / FÃ¶rdjupning',
+            title: 'SituationsfÃ¶rstÃ¥else',
+            summary: 'Deltagaren tolkar vad som hÃ¤nder i en realistisk miljÃ¶.',
+            example: 'I en virtuell miljÃ¶ ska deltagaren identifiera avvikelser, risker och kritiska signaler innan situationen eskalerar.',
+            practical: 'Byggs med tydliga observationsmÃ¥l och Ã¥terkoppling pÃ¥ vad deltagaren uppmÃ¤rksammat eller missat.',
+            benefits: ['TrÃ¤nar uppmÃ¤rksamhet', 'Bra fÃ¶r sÃ¤kerhetskritiska moment', 'Ger hÃ¶g nÃ¤rvaro'],
+            notes: 'Viktigast Ã¤r designen av uppgiften, inte tekniken i sig.'
           },
           {
-            category: 'Träning / Tillämpning',
-            title: 'Praktisk träning',
-            summary: 'Deltagaren övar handgrepp eller beslutsfattande i immersiv miljö.',
-            example: 'Deltagaren genomför en procedur i VR där fel får konsekvenser i scenariot men utan risk i verkligheten.',
-            practical: 'Behöver tydliga mål, återställbara scenarier och loggning av centrala val eller moment.',
-            benefits: ['Säker träning', 'Hög realism', 'Möjliggör repetition'],
-            notes: 'Motiveras särskilt när verklig övning är dyr, farlig eller svår att tillgängliggöra.'
+            category: 'TrÃ¤ning / TillÃ¤mpning',
+            title: 'Praktisk trÃ¤ning',
+            summary: 'Deltagaren Ã¶var handgrepp eller beslutsfattande i immersiv miljÃ¶.',
+            example: 'Deltagaren genomfÃ¶r en procedur i VR dÃ¤r fel fÃ¥r konsekvenser i scenariot men utan risk i verkligheten.',
+            practical: 'BehÃ¶ver tydliga mÃ¥l, Ã¥terstÃ¤llbara scenarier och loggning av centrala val eller moment.',
+            benefits: ['SÃ¤ker trÃ¤ning', 'HÃ¶g realism', 'MÃ¶jliggÃ¶r repetition'],
+            notes: 'Motiveras sÃ¤rskilt nÃ¤r verklig Ã¶vning Ã¤r dyr, farlig eller svÃ¥r att tillgÃ¤ngliggÃ¶ra.'
           },
           {
-            category: 'Examination / Återkoppling',
+            category: 'Examination / Ã…terkoppling',
             title: 'After Action Review',
-            summary: 'Återspelning och analys av vad deltagaren faktiskt gjorde.',
-            example: 'Efter XR-pass går handledaren igenom vägval, reaktionstid och kritiska beslut utifrån logg och inspelning.',
-            practical: 'Kombinera systemdata med handledarbedömning och låt deltagaren själv reflektera över sina beslut.',
-            benefits: ['Mycket stark återkoppling', 'Knyter ihop upplevelse och lärande', 'Bra underlag för förbättring'],
-            notes: 'En bra debrief är ofta viktigare än själva tekniken. Människor älskar att rusa förbi den delen och undra varför inget fastnade.'
+            summary: 'Ã…terspelning och analys av vad deltagaren faktiskt gjorde.',
+            example: 'Efter XR-pass gÃ¥r handledaren igenom vÃ¤gval, reaktionstid och kritiska beslut utifrÃ¥n logg och inspelning.',
+            practical: 'Kombinera systemdata med handledarbedÃ¶mning och lÃ¥t deltagaren sjÃ¤lv reflektera Ã¶ver sina beslut.',
+            benefits: ['Mycket stark Ã¥terkoppling', 'Knyter ihop upplevelse och lÃ¤rande', 'Bra underlag fÃ¶r fÃ¶rbÃ¤ttring'],
+            notes: 'En bra debrief Ã¤r ofta viktigare Ã¤n sjÃ¤lva tekniken. MÃ¤nniskor Ã¤lskar att rusa fÃ¶rbi den delen och undra varfÃ¶r inget fastnade.'
           }
         ]
       }
     ];
+
+    const STORAGE_KEY = 'pedagogiskKartaData';
+    const ADMIN_PASSWORD = 'utbe';
 
     const matrixBody = document.getElementById('matrix-body');
     const detailTitle = document.getElementById('detail-title');
@@ -622,6 +810,52 @@
     const detailNotes = document.getElementById('detail-notes');
     const detailModal = document.getElementById('detail-modal');
     const closeModalButton = document.getElementById('close-modal');
+    const roleControls = document.getElementById('role-controls');
+    const roleStatus = document.getElementById('role-status');
+    const roleToggle = document.getElementById('role-toggle');
+    const roleUserPill = document.getElementById('role-user-pill');
+    const roleAdminPill = document.getElementById('role-admin-pill');
+    const editorFields = document.getElementById('editor-fields');
+    const editTitle = document.getElementById('edit-title');
+    const editSummary = document.getElementById('edit-summary');
+    const editExample = document.getElementById('edit-example');
+    const editPractical = document.getElementById('edit-practical');
+    const editBenefits = document.getElementById('edit-benefits');
+    const editNotes = document.getElementById('edit-notes');
+    const saveCellButton = document.getElementById('save-cell');
+
+    let isAdmin = false;
+    let selectedCellIndex = null;
+    let data = loadData();
+
+    const rowIcons = {
+      'PDF / Dokument': 'ðŸ“„',
+      'Quiz / Interaktivt test': 'â“',
+      'Video / GenomgÃ¥ng': 'ðŸŽ¬',
+      'Simulering / Scenario': 'ðŸ§©',
+      'XR / Immersiv miljÃ¶': 'ðŸ¥½'
+    };
+
+    const cellIcons = {
+      'KunskapsinhÃ¤mtning': 'ðŸ“˜',
+      'FÃ¶rstÃ¥else / FÃ¶rdjupning': 'ðŸ§ ',
+      'TrÃ¤ning / TillÃ¤mpning': 'ðŸ› ï¸',
+      'Examination / Ã…terkoppling': 'âœ…'
+    };
+
+    function loadData() {
+      const storedData = localStorage.getItem(STORAGE_KEY);
+      if (!storedData) return structuredClone(initialData);
+      try {
+        return JSON.parse(storedData);
+      } catch {
+        return structuredClone(initialData);
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
 
     function openModal() {
       detailModal.classList.add('open');
@@ -635,13 +869,14 @@
     }
 
     function renderMatrix() {
+      matrixBody.innerHTML = '';
       data.forEach((row, rowIndex) => {
         const tr = document.createElement('tr');
 
         const rowHeader = document.createElement('th');
         rowHeader.className = `row-header ${row.rowClass}`;
         rowHeader.scope = 'row';
-        rowHeader.innerHTML = `<span class="level">${row.level}</span><span class="method">${row.method}</span>`;
+        rowHeader.innerHTML = `<span class="level">${row.level}</span><span class="method"><span class="method-icon" aria-hidden="true">${rowIcons[row.method] ?? 'ðŸ“Œ'}</span>${row.method}</span>`;
         tr.appendChild(rowHeader);
 
         row.cells.forEach((cell, cellIndex) => {
@@ -654,7 +889,10 @@
           button.dataset.cell = cellIndex;
           button.innerHTML = `
             <span class="tag">${row.method}</span>
-            <span class="title">${cell.title}</span>
+            <span class="topline">
+              <span class="icon" aria-hidden="true">${cellIcons[cell.category] ?? 'ðŸ“Œ'}</span>
+              <span class="title">${cell.title}</span>
+            </span>
             <span class="summary">${cell.summary}</span>
           `;
           button.addEventListener('click', () => showDetail(row, cell, button));
@@ -667,7 +905,30 @@
       });
     }
 
+    function updateRoleUI() {
+      roleStatus.setAttribute('aria-label', `Aktiv roll: ${isAdmin ? 'AdministratÃ¶r' : 'AnvÃ¤ndare'}`);
+      roleToggle.textContent = isAdmin ? 'Byt till anvÃ¤ndare' : 'Byt till administratÃ¶r';
+      roleUserPill.classList.toggle('active', !isAdmin);
+      roleAdminPill.classList.toggle('active', isAdmin);
+      roleControls.classList.toggle('is-admin', isAdmin);
+      editorFields.classList.toggle('open', isAdmin && selectedCellIndex !== null);
+    }
+
+    function fillEditor(cell) {
+      editTitle.value = cell.title;
+      editSummary.value = cell.summary;
+      editExample.value = cell.example;
+      editPractical.value = cell.practical;
+      editBenefits.value = cell.benefits.join('\n');
+      editNotes.value = cell.notes;
+    }
+
     function showDetail(row, cell, activeButton) {
+      selectedCellIndex = {
+        row: Number(activeButton.dataset.row),
+        cell: Number(activeButton.dataset.cell)
+      };
+
       document.querySelectorAll('.cell button').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
       activeButton.setAttribute('aria-pressed', 'true');
 
@@ -688,10 +949,58 @@
         detailBenefits.appendChild(li);
       });
 
+      if (isAdmin) {
+        fillEditor(cell);
+      }
+      updateRoleUI();
+
       openModal();
     }
 
+    function saveSelectedCell() {
+      if (!isAdmin || !selectedCellIndex) return;
+
+      const cell = data[selectedCellIndex.row].cells[selectedCellIndex.cell];
+      cell.title = editTitle.value.trim();
+      cell.summary = editSummary.value.trim();
+      cell.example = editExample.value.trim();
+      cell.practical = editPractical.value.trim();
+      cell.notes = editNotes.value.trim();
+      cell.benefits = editBenefits.value
+        .split('\n')
+        .map(item => item.trim())
+        .filter(Boolean);
+
+      if (cell.benefits.length === 0) {
+        cell.benefits = ['(Ingen punkt angiven)'];
+      }
+
+      saveData();
+      renderMatrix();
+      showDetail(data[selectedCellIndex.row], cell, document.querySelector(`button[data-row="${selectedCellIndex.row}"][data-cell="${selectedCellIndex.cell}"]`));
+      alert('Ã„ndringar sparade.');
+    }
+
+    roleToggle.addEventListener('click', () => {
+      if (isAdmin) {
+        isAdmin = false;
+        updateRoleUI();
+        return;
+      }
+
+      const enteredPassword = prompt('Ange administratÃ¶rslÃ¶senord:');
+      if (enteredPassword === ADMIN_PASSWORD) {
+        isAdmin = true;
+        updateRoleUI();
+      } else if (enteredPassword !== null) {
+        alert('Fel lÃ¶senord.');
+      }
+    });
+
+    saveCellButton.addEventListener('click', saveSelectedCell);
+
     renderMatrix();
+    updateRoleUI();
 
     closeModalButton.addEventListener('click', closeModal);
     detailModal.addEventListener('click', event => {
