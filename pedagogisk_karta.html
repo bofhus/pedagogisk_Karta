@@ -10,7 +10,7 @@
       --panel: #ffffff;
       --text: #18324a;
       --muted: #5d7387;
-      --line: #d7e1ea;
+      --line: #c6d2de;
       --shadow: 0 10px 30px rgba(20, 52, 84, 0.12);
       --yellow: #f4b528;
       --green: #5ea43d;
@@ -18,11 +18,11 @@
       --purple: #9a4b95;
       --blue1: #dbe8f6;
       --blue2: #b7d0ea;
-      --bas: linear-gradient(135deg, #d7b37a, #f0d5a7);
-      --interaktiv: linear-gradient(135deg, #74b786, #b7e0c0);
-      --tillampning: linear-gradient(135deg, #6a88b2, #afc7e7);
-      --sim: linear-gradient(135deg, #7f94a8, #c8d3df);
-      --immersiv: linear-gradient(135deg, #6a67b7, #b6b0ea);
+      --bas: linear-gradient(90deg, #f0bb50, #d89a25);
+      --interaktiv: linear-gradient(90deg, #6bc189, #419f68);
+      --tillampning: linear-gradient(90deg, #7195be, #456c96);
+      --sim: linear-gradient(90deg, #8299ac, #60798d);
+      --immersiv: linear-gradient(90deg, #877bc8, #6655ac);
     }
 
     * { box-sizing: border-box; }
@@ -30,35 +30,39 @@
     body {
       margin: 0;
       font-family: Inter, Segoe UI, Arial, sans-serif;
-      background: linear-gradient(180deg, var(--blue2), var(--bg));
+      background:
+        radial-gradient(circle at 20% 15%, rgba(101, 177, 255, 0.55), transparent 50%),
+        radial-gradient(circle at 85% 80%, rgba(205, 234, 255, 0.42), transparent 45%),
+        linear-gradient(180deg, #0e4e94 0%, #2a73b7 38%, #79add6 100%);
       color: var(--text);
     }
 
     .page {
-      max-width: 1500px;
+      max-width: 1320px;
       margin: 0 auto;
       padding: 32px 20px 48px;
     }
 
     .hero {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .hero h1 {
       margin: 0 0 8px;
-      font-size: clamp(2rem, 4vw, 3.4rem);
-      letter-spacing: 0.04em;
+      font-size: clamp(2rem, 3.4vw, 3.2rem);
+      letter-spacing: 0.03em;
       text-transform: uppercase;
       color: #ffffff;
-      text-shadow: 0 3px 18px rgba(0,0,0,0.22);
+      text-shadow: 0 4px 22px rgba(0,0,0,0.3);
     }
 
     .hero p {
       margin: 0 auto;
-      max-width: 900px;
-      color: #f4f8fc;
-      font-size: 1rem;
+      max-width: 980px;
+      color: #deedf8;
+      font-size: 0.95rem;
+      opacity: 0.9;
     }
 
     .layout {
@@ -70,7 +74,7 @@
       background: rgba(255,255,255,0.92);
       backdrop-filter: blur(6px);
       border: 1px solid rgba(255,255,255,0.5);
-      border-radius: 22px;
+      border-radius: 14px;
       box-shadow: var(--shadow);
     }
 
@@ -84,15 +88,15 @@
 
     .matrix {
       width: 100%;
-      min-width: 980px;
+      min-width: 1040px;
       border-collapse: separate;
       border-spacing: 0;
     }
 
     .matrix th,
     .matrix td {
-      border-right: 1px dashed var(--line);
-      border-bottom: 1px dashed var(--line);
+      border-right: 1px dashed #b8c8d8;
+      border-bottom: 1px dashed #b8c8d8;
       vertical-align: stretch;
     }
 
@@ -107,32 +111,40 @@
     }
 
     .corner {
-      min-width: 220px;
-      background: linear-gradient(180deg, #e8f0f9, #d9e7f4);
+      min-width: 230px;
+      background: linear-gradient(180deg, #e8eff8, #d7e4f3);
       color: var(--text);
-      padding: 18px;
+      padding: 14px 18px;
       text-align: left;
       font-size: 0.95rem;
     }
 
     .column-header {
       color: white;
-      padding: 18px 14px;
+      padding: 14px 10px;
       text-align: center;
       font-size: 1rem;
       font-weight: 800;
     }
 
-    .col-1 { background: var(--yellow); }
-    .col-2 { background: var(--green); }
-    .col-3 { background: var(--orange); }
-    .col-4 { background: var(--purple); }
+    .col-1 { background: linear-gradient(180deg, #f4c648, #d8a52c); }
+    .col-2 { background: linear-gradient(180deg, #73b850, #4e8f35); }
+    .col-3 { background: linear-gradient(180deg, #ea8a2e, #d96e1a); }
+    .col-4 { background: linear-gradient(180deg, #b4458f, #8b3572); }
 
     .row-header {
-      width: 220px;
-      padding: 18px 16px;
+      width: 230px;
+      padding: 14px 16px;
       color: white;
       text-align: left;
+      background: linear-gradient(180deg, #3f6c9a, #294c72);
+    }
+
+    .row-header .row-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      display: block;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
     }
 
     .row-header .level {
@@ -140,40 +152,40 @@
       font-size: 1.2rem;
       font-weight: 900;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       letter-spacing: 0.04em;
     }
 
     .row-header .method {
       display: block;
-      font-size: 1rem;
+      font-size: 0.98rem;
       font-weight: 700;
     }
 
-    .row-bas { background: var(--bas); }
-    .row-interaktiv { background: var(--interaktiv); }
-    .row-tillampning { background: var(--tillampning); }
-    .row-sim { background: var(--sim); }
-    .row-immersiv { background: var(--immersiv); }
+    .row-bas { box-shadow: inset 8px 0 0 #e6b95e; }
+    .row-interaktiv { box-shadow: inset 8px 0 0 #68bb8a; }
+    .row-tillampning { box-shadow: inset 8px 0 0 #6e94be; }
+    .row-sim { box-shadow: inset 8px 0 0 #7f96ac; }
+    .row-immersiv { box-shadow: inset 8px 0 0 #8677c8; }
 
     .cell {
-      padding: 10px;
+      padding: 8px;
       background: rgba(255,255,255,0.85);
-      min-height: 138px;
+      min-height: 126px;
     }
 
     .cell button {
       width: 100%;
       height: 100%;
-      min-height: 116px;
+      min-height: 108px;
       border: none;
-      border-radius: 18px;
-      padding: 16px;
+      border-radius: 8px;
+      padding: 12px;
       cursor: pointer;
-      text-align: left;
-      background: linear-gradient(180deg, #ffffff, #f6f9fc);
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff, #f1f4f8);
       color: var(--text);
-      box-shadow: 0 6px 16px rgba(24,50,74,0.08);
+      box-shadow: inset 0 0 0 1px #e0e8f0;
       transition: transform 0.18s ease, box-shadow 0.18s ease, outline-color 0.18s ease;
       outline: 2px solid transparent;
     }
@@ -181,31 +193,37 @@
     .cell button:hover,
     .cell button:focus-visible {
       transform: translateY(-2px);
-      box-shadow: 0 10px 22px rgba(24,50,74,0.14);
+      box-shadow: 0 8px 20px rgba(24,50,74,0.14);
       outline-color: #6e9fd3;
+    }
+
+    .cell .icon {
+      display: block;
+      font-size: 2rem;
+      margin-bottom: 8px;
     }
 
     .cell .tag {
       display: inline-block;
-      font-size: 0.74rem;
+      font-size: 0.68rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--muted);
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
     .cell .title {
       display: block;
-      font-size: 1.02rem;
+      font-size: 0.98rem;
       font-weight: 800;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       line-height: 1.25;
     }
 
     .cell .summary {
       display: block;
-      font-size: 0.92rem;
+      font-size: 0.84rem;
       color: var(--muted);
       line-height: 1.4;
     }
@@ -330,8 +348,7 @@
     <section class="hero">
       <h1>Pedagogisk karta över utbildningsdesign</h1>
       <p>
-        Första utgåva av en interaktiv matris där varje del är klickbar och visar ett konkret exempel.
-        Den är byggd som en enkel, fristående HTML-fil för att du senare ska kunna vidareutveckla den i Codex utan att behöva gräva i ett ramverk som någon överentusiastisk människa valde för att känna sig modern.
+        Interaktiv översikt där varje ruta visar exempel, praktiskt genomförande och återkoppling för vald utbildningsdel.
       </p>
     </section>
 
@@ -623,6 +640,37 @@
     const detailModal = document.getElementById('detail-modal');
     const closeModalButton = document.getElementById('close-modal');
 
+    const rowIcons = {
+      Bas: '📄',
+      Interaktiv: '❓',
+      Tillämpning: '▶️',
+      Scenario: '🧭',
+      Immersiv: '🥽'
+    };
+
+    const cellIcons = {
+      'Teoritext': '📄',
+      'Fördjupande läsanvisning': '📘',
+      'Case-uppgifter': '🧩',
+      'Reflektionsfrågor': '📝',
+      'Kunskapstest': '❓',
+      'Begrepps-quiz': '🎯',
+      'Scenariofrågor': '🧠',
+      'Automatiskt test': '✅',
+      'Föreläsning': '🎬',
+      'Demonstration': '👩‍🏫',
+      'Exempelanalys': '📊',
+      'Muntligt förhör': '🎧',
+      'Situationsspel': '🕹️',
+      'Beslutsövning': '📍',
+      'Praktiskt scenario': '❤️',
+      'Scenario-prov': '🥽',
+      'Virtuell miljö': '🌐',
+      'Situationsförståelse': '💡',
+      'Praktisk träning': '🛡️',
+      'After Action Review': '☁️'
+    };
+
     function openModal() {
       detailModal.classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -641,7 +689,7 @@
         const rowHeader = document.createElement('th');
         rowHeader.className = `row-header ${row.rowClass}`;
         rowHeader.scope = 'row';
-        rowHeader.innerHTML = `<span class="level">${row.level}</span><span class="method">${row.method}</span>`;
+        rowHeader.innerHTML = `<span class="row-icon" aria-hidden="true">${rowIcons[row.level] || '📘'}</span><span class="level">${row.level}</span><span class="method">${row.method}</span>`;
         tr.appendChild(rowHeader);
 
         row.cells.forEach((cell, cellIndex) => {
@@ -653,6 +701,7 @@
           button.dataset.row = rowIndex;
           button.dataset.cell = cellIndex;
           button.innerHTML = `
+            <span class="icon" aria-hidden="true">${cellIcons[cell.title] || '📚'}</span>
             <span class="tag">${row.method}</span>
             <span class="title">${cell.title}</span>
             <span class="summary">${cell.summary}</span>
