@@ -967,6 +967,7 @@
     let isAdmin = false;
     let selectedCellIndex = null;
     let data = loadData();
+    saveData();
 
     const rowIcons = {
       'PDF / Dokument': '📄',
@@ -983,11 +984,41 @@
       'Examination / Återkoppling': '✅'
     };
 
+    function normalizeData(rawData) {
+      if (!Array.isArray(rawData)) return structuredClone(initialData);
+
+      return initialData.map((defaultRow, rowIndex) => {
+        const rawRow = rawData[rowIndex] ?? {};
+        return {
+          ...defaultRow,
+          ...rawRow,
+          cells: defaultRow.cells.map((defaultCell, cellIndex) => {
+            const rawCell = rawRow.cells?.[cellIndex] ?? {};
+            const normalizedBenefits = Array.isArray(rawCell.benefits)
+              ? rawCell.benefits.filter(item => typeof item === 'string' && item.trim())
+              : defaultCell.benefits;
+
+            return {
+              ...defaultCell,
+              ...rawCell,
+              title: (rawCell.title ?? defaultCell.title).toString(),
+              summary: (rawCell.summary ?? defaultCell.summary).toString(),
+              example: (rawCell.example ?? defaultCell.example).toString(),
+              practical: (rawCell.practical ?? defaultCell.practical).toString(),
+              notes: (rawCell.notes ?? defaultCell.notes).toString(),
+              mediaUrl: (rawCell.mediaUrl ?? '').toString(),
+              benefits: normalizedBenefits.length ? normalizedBenefits : ['(Ingen punkt angiven)']
+            };
+          })
+        };
+      });
+    }
+
     function loadData() {
       const storedData = localStorage.getItem(STORAGE_KEY);
       if (!storedData) return structuredClone(initialData);
       try {
-        return JSON.parse(storedData);
+        return normalizeData(JSON.parse(storedData));
       } catch {
         return structuredClone(initialData);
       }
@@ -1158,7 +1189,8 @@
       detailNotes.textContent = cell.notes;
       renderMedia(cell);
       detailBenefits.innerHTML = '';
-      cell.benefits.forEach(item => {
+      const benefitItems = Array.isArray(cell.benefits) ? cell.benefits : ['(Ingen punkt angiven)'];
+      benefitItems.forEach(item => {
         const li = document.createElement('li');
         li.textContent = item;
         detailBenefits.appendChild(li);
